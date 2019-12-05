@@ -32,6 +32,7 @@ import org.apache.camel.spi.EndpointUtilizationStatistics;
 import org.apache.camel.support.DefaultComponent;
 import org.apache.camel.support.DefaultEndpoint;
 import org.apache.camel.support.DefaultProducer;
+
 import org.junit.Test;
 
 public class DefaultProducerCacheTest extends ContextTestSupport {
@@ -191,7 +192,6 @@ public class DefaultProducerCacheTest extends ContextTestSupport {
         public boolean isSingleton() {
             return isSingleton;
         }
-
     }
 
     private final class MyProducer extends DefaultProducer {
@@ -215,5 +215,4 @@ public class DefaultProducerCacheTest extends ContextTestSupport {
             shutdownCounter.incrementAndGet();
         }
     }
-
 }

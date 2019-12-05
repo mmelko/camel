@@ -16,12 +16,17 @@
  */
 package org.apache.camel.impl;
 
+import static org.awaitility.Awaitility.await;
+
 import org.apache.camel.CamelContext;
 import org.apache.camel.ContextTestSupport;
 import org.apache.camel.Endpoint;
 import org.apache.camel.Exchange;
 import org.apache.camel.ProducerTemplate;
+
 import org.junit.Test;
+
+import java.util.concurrent.TimeUnit;
 
 public class DefaultProducerTemplateWithCustomCacheMaxSizeTest extends ContextTestSupport {
 
@@ -47,10 +52,9 @@ public class DefaultProducerTemplateWithCustomCacheMaxSizeTest extends ContextTe
 
         // the eviction is async so force cleanup
         template.cleanUp();
-
+        await().atMost(1, TimeUnit.SECONDS).until(() -> template.getCurrentCacheSize() == 200);
         assertEquals("Size should be 200", 200, template.getCurrentCacheSize());
         template.stop();
-
         // should be 0
         assertEquals("Size should be 0", 0, template.getCurrentCacheSize());
     }

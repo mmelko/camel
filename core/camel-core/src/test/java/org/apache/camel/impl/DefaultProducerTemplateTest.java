@@ -16,8 +16,11 @@
  */
 package org.apache.camel.impl;
 
+import static org.awaitility.Awaitility.await;
+
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.camel.ContextTestSupport;
 import org.apache.camel.Endpoint;
@@ -29,6 +32,7 @@ import org.apache.camel.RuntimeCamelException;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.impl.engine.DefaultProducerTemplate;
+
 import org.junit.Test;
 
 /**
@@ -291,7 +295,7 @@ public class DefaultProducerTemplateTest extends ContextTestSupport {
 
         // the eviction is async so force cleanup
         template.cleanUp();
-
+        await().atMost(1, TimeUnit.SECONDS).until(() -> template.getCurrentCacheSize() == 500);
         assertEquals("Size should be 500", 500, template.getCurrentCacheSize());
         template.stop();
 
@@ -314,12 +318,11 @@ public class DefaultProducerTemplateTest extends ContextTestSupport {
 
         // the eviction is async so force cleanup
         template.cleanUp();
-
+        await().atMost(1, TimeUnit.SECONDS).until(() -> template.getCurrentCacheSize() == 500);
         assertEquals("Size should be 500", 500, template.getCurrentCacheSize());
         template.stop();
 
         // should be 0
         assertEquals("Size should be 0", 0, template.getCurrentCacheSize());
     }
-
 }
