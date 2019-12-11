@@ -43,6 +43,7 @@ public class InfinispanManager extends ServiceSupport {
     private final CamelContext camelContext;
     private BasicCacheContainer cacheContainer;
     private boolean isManagedCacheContainer;
+    private static BasicCacheContainer defaultEmbeddedCacheContainer;
 
     public InfinispanManager() {
         this.camelContext = null;
@@ -124,8 +125,11 @@ public class InfinispanManager extends ServiceSupport {
                         cacheContainer = new DefaultCacheManager(is, true);
                     }
                 } else {
-                    cacheContainer = new DefaultCacheManager(new GlobalConfigurationBuilder().defaultCacheName("default").build(),
-                            new org.infinispan.configuration.cache.ConfigurationBuilder().build());
+                    if (defaultEmbeddedCacheContainer == null) {
+                        defaultEmbeddedCacheContainer = new DefaultCacheManager(new GlobalConfigurationBuilder().defaultCacheName("default").build(),
+                                                                                new org.infinispan.configuration.cache.ConfigurationBuilder().build());
+                    }
+                    cacheContainer = defaultEmbeddedCacheContainer;
                 }
             }
 
